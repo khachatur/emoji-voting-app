@@ -10,7 +10,7 @@ function App() {
     <MantineProvider withGlobalStyles withNormalizeCSS>
       <QueryClientProvider client={queryClient}>
         <Container size="sm" py="xl">
-          <Title align="center" mb="xl">Daily Emoji Jokes</Title>
+          <Title align="center" mb="xl">Daily Jokes</Title>
           <JokeDisplay />
         </Container>
       </QueryClientProvider>

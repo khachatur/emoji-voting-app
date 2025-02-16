@@ -8,15 +8,18 @@ export default function JokeDisplay() {
   const queryClient = useQueryClient();
   
   // Fetch a random joke
-  const { data: joke, refetch, isLoading } = useQuery(['joke'], async () => {
-    const res = await fetch(API_URL);
-    if (!res.ok) throw new Error('Error fetching joke');
-    return res.json();
+  const { data: joke, refetch, isLoading } = useQuery({
+    queryKey: ['joke'],
+    queryFn: async () => {
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error('Error fetching joke');
+      return res.json();
+    },
   });
   
   // Mutation to submit a vote
-  const voteMutation = useMutation(
-    async (emoji) => {
+  const voteMutation = useMutation({
+    mutationFn: async (emoji) => {
       const res = await fetch(`${API_URL}/${joke._id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -25,13 +28,10 @@ export default function JokeDisplay() {
       if (!res.ok) throw new Error('Error submitting vote');
       return res.json();
     },
-    {
-      onSuccess: () => {
-        // Invalidate and refetch the joke data for updated votes
-        queryClient.invalidateQueries(['joke']);
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['joke'] });
+    },
+  });
 
   if (isLoading) return <Text>Loading joke...</Text>;
 
