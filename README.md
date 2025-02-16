@@ -65,7 +65,7 @@ This project consists of two main parts:
 4. **Seed the database:**
 
    ```
-   node server/seed.js
+   node seed.js
    ```
 
 5. **Start the development servers:**
