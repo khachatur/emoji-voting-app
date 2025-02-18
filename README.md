@@ -12,7 +12,6 @@ This project consists of two main parts:
    - Modern UI with Mantine for styling.
    - Mobile responsive design.
    - State management using React Context and React Query.
-
 2. **Backend (Node.js + Express)**
 
    - Handles joke data and voting logic.
@@ -44,7 +43,6 @@ This project consists of two main parts:
    git clone https://github.com/your-username/emoji-voting-app.git
    cd emoji-voting-app
    ```
-
 2. **Install dependencies:**
 
    ```
@@ -53,7 +51,6 @@ This project consists of two main parts:
    cd ../server
    npm install
    ```
-
 3. **Set up environment variables:**
    Create a `.env` file in the `server` folder with the following:
 
@@ -61,13 +58,11 @@ This project consists of two main parts:
    MONGO_URI=mongodb://localhost:27017/emojivotingapp
    PORT=5000
    ```
-
 4. **Seed the database:**
 
    ```
    node server/seed.js
    ```
-
 5. **Start the development servers:**
    Start the backend:
 
@@ -95,7 +90,6 @@ To run the application using Docker:
    docker-compose build
 
    ```
-
 2. Start the containers:
 
 ```
@@ -106,21 +100,16 @@ The application will be available at http://localhost:5173
 
 ## 🔍 API Endpoints
 
-### **GET /api/joke**
+| Method | Endpoint      | Description              |
+| ------ | ------------- | ------------------------ |
+| GET    | /api/joke     | Fetch a random joke      |
+| POST   | /api/joke/:id | Submit a vote for a joke |
+| DELETE | /api/joke/:id | Delete a specific joke   |
+| PUT    | /api/joke/:id | Update the joke content  |
 
-- Fetches a random joke from the database.
+## 🚀 CI/CD Pipeline
 
-### **POST /api/joke/:id**
-
-- Submits a vote for a joke.
-
-### **DELETE /api/joke/:id**
-
-- Deletes a specific joke.
-
-### **PUT /api/joke/:id**
-
-- Updates the content of a specific joke.
+This project uses GitHub Actions for continuous integration and deployment. The pipeline configuration is defined in the .github/workflows/ci-cd.yml file and performs the following steps:
 
 ## ✅ Testing
 
