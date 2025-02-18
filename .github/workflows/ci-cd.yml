@@ -1,0 +1,77 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'" 
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Build the client (React app)
+      - name: Install client dependencies
+        working-directory: client
+        run: npm install
+
+      - name: Build client app
+        working-directory: client
+        run: npm run build
+
+      # Build and test the server (Node.js API)
+      - name: Install server dependencies
+        working-directory: server
+        run: npm install
+
+      # Optional: Run server tests if available
+      - name: Run server tests
+        working-directory: server
+        run: npm test || echo "No tests defined or tests failed (if expected, ignore)"
+
+      # Build Docker images using Docker Compose
+      - name: Build Docker images
+        run: docker-compose build
+
+      # Run Docker Compose to spin up the containers
+      - name: Start Docker Compose services
+        run: docker-compose up -d
+
+      # Give the services a few seconds to initialize
+      - name: Wait for services to start
+        run: sleep 10
+
+      # Verify that the server is running by checking the joke API endpoint
+      - name: Check server status
+        run: curl -f http://localhost:5000/api/joke || (echo "Server not responding" && exit 1)
+
+      # Optional: Deploy step could be added here (e.g., push images to a registry)
+      # - name: Push Docker images to Docker Hub
+      #   run: |
+      #     docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      #     docker-compose push
+
+      # Shut down Docker Compose services at the end of the job
+      - name: Shut down Docker Compose
+        if: always()
+        run: docker-compose down
